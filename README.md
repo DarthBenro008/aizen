@@ -1,0 +1,122 @@
+# aizen
+
+A native macOS menubar utility that shows real-time remaining usage limits for your AI subscriptions.
+
+## Features
+
+- Lives in your menubar with a compact `C:72% G:85%` summary at a glance
+- Fetches usage data in real-time every time you open the popover
+- Auto-discovers credentials from locally installed CLI tools -- zero configuration needed
+- Color-coded progress bars: green (ok), yellow (warning), red (critical)
+- Shows reset countdowns for each limit window
+- Automatic token refresh when Codex credentials expire
+- Extensible provider architecture -- add new AI services by conforming to a single protocol
+
+## Supported Providers
+
+| Provider | Metrics | Credential Source |
+|---|---|---|
+| GPT Codex | 5-hour limit, Weekly limit | `~/.codex/auth.json` (via `codex login`) |
+| GitHub Copilot | Premium requests remaining | `gh auth token` (via `gh auth login`) |
+
+## Prerequisites
+
+- macOS 15.0 (Sequoia) or later
+- Xcode 16+ (to build from source)
+
+For GPT Codex tracking:
+- [Codex CLI](https://github.com/openai/codex) installed and authenticated (`codex login`)
+
+For GitHub Copilot tracking:
+- [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`)
+
+The app gracefully handles missing providers -- if a CLI tool isn't installed, it shows setup instructions instead of an error.
+
+## Installation
+
+```bash
+git clone https://github.com/benro/aizen.git
+cd aizen
+open aizen.xcodeproj
+```
+
+Build and run from Xcode (Cmd+R). The app appears in your menubar, not in the Dock.
+
+## How It Works
+
+**Codex**: Reads your access token and account ID from `~/.codex/auth.json`, then queries the ChatGPT usage API (`chatgpt.com/backend-api/wham/usage`) for rate limit windows. If the token has expired, it automatically refreshes via the OpenAI OAuth endpoint and writes the new token back to disk.
+
+**Copilot**: Runs `gh auth token` to get your GitHub token, then queries the Copilot internal API (`api.github.com/copilot_internal/user`) for quota snapshots including premium request entitlements and remaining counts.
+
+Both providers use undocumented internal APIs. These may change without notice.
+
+## Adding a Provider
+
+aizen is designed to be extended. To add a new AI service, conform to the `UsageProvider` protocol:
+
+```swift
+protocol UsageProvider: Identifiable {
+    var id: String { get }
+    var name: String { get }
+    var iconName: String { get }            // SF Symbol name
+    var planType: String? { get }
+    var summaryPrefix: String { get }       // Single char for menubar (e.g. "C" for Claude)
+    var configurationInstructions: String { get }
+
+    func fetchUsage() async throws -> [UsageItem]
+    func isAvailable() -> Bool
+    func summaryRemainingPercent(from items: [UsageItem]) -> Int?
+}
+```
+
+Then register it in `UsageManager.init`:
+
+```swift
+self.providers = [
+    CodexProvider(credentialManager: credentialManager),
+    CopilotProvider(credentialManager: credentialManager),
+    YourNewProvider(credentialManager: credentialManager)
+]
+```
+
+The UI automatically picks up new providers -- no view changes needed.
+
+## Architecture
+
+```
+aizen/
+  aizenApp.swift              # MenuBarExtra entry point
+  Models/
+    UsageData.swift            # UsageItem, UsageStatus, ProviderUsageState
+    ProviderModels.swift       # Codable models for API responses
+  Providers/
+    UsageProvider.swift        # Provider protocol + ProviderError
+    CodexProvider.swift        # GPT Codex usage fetching
+    CopilotProvider.swift      # GitHub Copilot usage fetching
+  Services/
+    CredentialManager.swift    # Actor: credential reading, token refresh
+    UsageManager.swift         # @Observable orchestrator, menubar summary
+  Views/
+    MenuBarView.swift          # Main popover layout
+    ProviderCardView.swift     # Individual provider card
+    UsageBarView.swift         # Color-coded progress bar
+  Assets.xcassets/
+    AppIcon.appiconset/        # App icon (all sizes)
+    MenuBarIcon.imageset/      # Monochrome menubar template icon
+```
+
+## Tech Stack
+
+- SwiftUI with `MenuBarExtra` (`.window` style)
+- `@Observable` (Observation framework, no Combine)
+- Swift concurrency: `async/await`, `actor` for thread-safe credential access
+- Zero external dependencies
+
+## License
+
+MIT
+
+## Acknowledgements
+
+- [CodexBar](https://github.com/steipete/CodexBar) for architecture inspiration
+- Uses undocumented OpenAI and GitHub APIs -- use at your own discretion
