@@ -1,0 +1,9 @@
+                Button("Check for Updates") {
+    @ObservedObject private var checkForUpdatesVM: CheckForUpdatesViewModel
+        self.checkForUpdatesVM = CheckForUpdatesViewModel(updater: updater)
+                    updater.checkForUpdates()
+                .disabled(!checkForUpdatesVM.canCheckForUpdates)
+                .disabled(!checkForUpdatesVM.canCheckForUpdates)
+                if usageManager.isRefreshing {
+                Button("Refresh") {
+                Button("Quit") {

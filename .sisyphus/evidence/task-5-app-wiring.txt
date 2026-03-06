@@ -1,0 +1,4 @@
+import Sparkle
+    private let updaterController: SPUStandardUpdaterController
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,

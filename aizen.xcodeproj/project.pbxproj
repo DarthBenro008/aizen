@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		AABB00012F538CD300FC8C7E /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AABB00022F538CD300FC8C7E /* Sparkle */; };
-		AABB00102F53AA0000FC8C7E /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AABB00022F538CD300FC8C7E /* Sparkle */; };
 		DD35CF162F538CD300FC8C7E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF152F538CD200FC8C7E /* WidgetKit.framework */; };
 		DD35CF182F538CD300FC8C7E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF172F538CD300FC8C7E /* SwiftUI.framework */; };
 		DD35CF252F538CD400FC8C7E /* aizenWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD35CF132F538CD200FC8C7E /* aizenWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -89,7 +88,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AABB00102F53AA0000FC8C7E /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +162,6 @@
 			);
 			name = aizenTests;
 			packageProductDependencies = (
-				AABB00022F538CD300FC8C7E /* Sparkle */,
 			);
 			productName = aizenTests;
 			productReference = AABB00202F53AA2000FC8C7E /* aizenTests.xctest */;
