@@ -117,7 +117,7 @@ aizenWidget/
 - SwiftUI with `MenuBarExtra` (`.window` style)
 - `@Observable` (Observation framework, no Combine)
 - Swift concurrency: `async/await`, `actor` for thread-safe credential access
-- Zero external dependencies
+- [Sparkle 2.x](https://sparkle-project.org/) for OTA auto-updates (single external dependency)
 - WidgetKit for desktop widget (shared data via App Groups)
 
 ## Desktop Widget
@@ -132,6 +132,25 @@ The widget reads data from the main app via shared `UserDefaults` (App Groups). 
 To add the widget: right-click your desktop → Edit Widgets → search for "aizen".
 
 **Note**: The widget does not make API calls directly. You need to open the menubar app at least once so it can write initial data for the widget to display.
+
+## Auto-Update
+
+aizen automatically checks for updates in the background every 24 hours using [Sparkle](https://sparkle-project.org/). A "Check for Updates" button is available in the menubar popover. When an update is available, Sparkle handles the full download, verification, installation, and relaunch -- no manual steps required.
+
+**Note**: Auto-updates only work with signed release builds distributed via GitHub Releases. Development builds from Xcode do not receive updates.
+
+## Releasing
+
+One-time setup (EdDSA keys, Apple certificates, GitHub secrets, GitHub Pages): see [`docs/release-setup.md`](docs/release-setup.md).
+
+To release a new version, create and push a version tag:
+
+```bash
+git tag v1.1.0
+git push origin v1.1.0
+```
+
+GitHub Actions automatically builds, signs, notarizes, creates a GitHub Release with the `.zip` asset, and updates the appcast at `https://darthbenro008.github.io/aizen/appcast.xml`. Running app instances will pick up the update within 24 hours.
 
 ## License
 
