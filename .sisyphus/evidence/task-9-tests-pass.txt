@@ -1,0 +1,51 @@
+    Signing Identity:     "Apple Development: hkpdev008@icloud.com (AC73PZDC95)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.benrostudios.aizen"
+                          (c7f0581f-dbf1-4afd-995f-7468135f81aa)
+    
+    /usr/bin/codesign --force --sign A9A036E133ACBC5006CABBE35A74421233B4C8C9 -o runtime --timestamp\=none --generate-entitlement-der /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/MacOS/aizen.debug.dylib
+/Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/MacOS/aizen.debug.dylib: replacing existing signature
+
+CodeSign /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/MacOS/__preview.dylib (in target 'aizen' from project 'aizen')
+    cd /Users/benro/gitworks/aizen-ota-updates
+    
+    Signing Identity:     "Apple Development: hkpdev008@icloud.com (AC73PZDC95)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.benrostudios.aizen"
+                          (c7f0581f-dbf1-4afd-995f-7468135f81aa)
+    
+    /usr/bin/codesign --force --sign A9A036E133ACBC5006CABBE35A74421233B4C8C9 -o runtime --timestamp\=none --generate-entitlement-der /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/MacOS/__preview.dylib
+/Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/MacOS/__preview.dylib: replacing existing signature
+
+CodeSign /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app (in target 'aizen' from project 'aizen')
+    cd /Users/benro/gitworks/aizen-ota-updates
+    
+    Signing Identity:     "Apple Development: hkpdev008@icloud.com (AC73PZDC95)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.benrostudios.aizen"
+                          (c7f0581f-dbf1-4afd-995f-7468135f81aa)
+    
+    /usr/bin/codesign --force --sign A9A036E133ACBC5006CABBE35A74421233B4C8C9 -o runtime --entitlements /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Intermediates.noindex/aizen.build/Debug/aizen.build/aizen.app.xcent --timestamp\=none --generate-entitlement-der /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app
+/Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app: replacing existing signature
+
+Validate /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app (in target 'aizen' from project 'aizen')
+    cd /Users/benro/gitworks/aizen-ota-updates
+    builtin-validationUtility /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+RegisterWithLaunchServices /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app (in target 'aizen' from project 'aizen')
+    cd /Users/benro/gitworks/aizen-ota-updates
+    /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app
+
+/Users/benro/gitworks/aizen-ota-updates/aizen.xcodeproj: warning: The Copy Bundle Resources build phase contains this target's Info.plist file '/Users/benro/gitworks/aizen-ota-updates/aizen/Info.plist'. (in target 'aizen' from project 'aizen')
+2026-03-06 15:25:12.481 xcodebuild[3194:11147233] [MT] IDETestOperationsObserverDebug: 7.668 elapsed -- Testing started completed.
+2026-03-06 15:25:12.481 xcodebuild[3194:11147233] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-03-06 15:25:12.481 xcodebuild[3194:11147233] [MT] IDETestOperationsObserverDebug: 7.668 sec, +7.668 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Logs/Test/Test-aizen-2026.03.06_15-24-58-+0530.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+Test suite 'UpdaterServiceTests' started on 'My Mac - aizen (3893)'
+Test case 'UpdaterServiceTests.testCanCheckForUpdatesPropertyType()' passed on 'My Mac - aizen (3893)' (0.002 seconds)
+Test case 'UpdaterServiceTests.testCheckForUpdatesViewModelExists()' passed on 'My Mac - aizen (3893)' (0.001 seconds)
+Test case 'UpdaterServiceTests.testMainActorIsolation()' passed on 'My Mac - aizen (3893)' (0.001 seconds)
+Exit code: 0

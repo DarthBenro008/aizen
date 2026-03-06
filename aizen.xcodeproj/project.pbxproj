@@ -8,12 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		AABB00012F538CD300FC8C7E /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AABB00022F538CD300FC8C7E /* Sparkle */; };
+		AABB00102F53AA0000FC8C7E /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AABB00022F538CD300FC8C7E /* Sparkle */; };
 		DD35CF162F538CD300FC8C7E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF152F538CD200FC8C7E /* WidgetKit.framework */; };
 		DD35CF182F538CD300FC8C7E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF172F538CD300FC8C7E /* SwiftUI.framework */; };
 		DD35CF252F538CD400FC8C7E /* aizenWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD35CF132F538CD200FC8C7E /* aizenWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AABB00112F53AA1000FC8C7E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD35CEA32F537F9700FC8C7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD35CEAA2F537F9700FC8C7E;
+			remoteInfo = aizen;
+		};
 		DD35CF232F538CD400FC8C7E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD35CEA32F537F9700FC8C7E /* Project object */;
@@ -38,6 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AABB00202F53AA2000FC8C7E /* aizenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = aizenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD35CEAB2F537F9700FC8C7E /* aizen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = aizen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD35CF132F538CD200FC8C7E /* aizenWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = aizenWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD35CF152F538CD200FC8C7E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -55,6 +64,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AABB00212F53AA3000FC8C7E /* aizenTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = aizenTests;
+			sourceTree = "<group>";
+		};
 		DD35CEAD2F537F9700FC8C7E /* aizen */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = aizen;
@@ -71,6 +85,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AABB00222F53AA4000FC8C7E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABB00102F53AA0000FC8C7E /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD35CEA82F537F9700FC8C7E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -96,6 +118,7 @@
 			children = (
 				DD35CEAD2F537F9700FC8C7E /* aizen */,
 				DD35CF192F538CD300FC8C7E /* aizenWidget */,
+				AABB00212F53AA3000FC8C7E /* aizenTests */,
 				DD35CF142F538CD200FC8C7E /* Frameworks */,
 				DD35CEAC2F537F9700FC8C7E /* Products */,
 			);
@@ -106,6 +129,7 @@
 			children = (
 				DD35CEAB2F537F9700FC8C7E /* aizen.app */,
 				DD35CF132F538CD200FC8C7E /* aizenWidgetExtension.appex */,
+				AABB00202F53AA2000FC8C7E /* aizenTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,6 +146,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AABB00232F53AA5000FC8C7E /* aizenTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABB00242F53AA6000FC8C7E /* Build configuration list for PBXNativeTarget "aizenTests" */;
+			buildPhases = (
+				AABB00252F53AA7000FC8C7E /* Sources */,
+				AABB00222F53AA4000FC8C7E /* Frameworks */,
+				AABB00262F53AA8000FC8C7E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AABB00272F53AA9000FC8C7E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AABB00212F53AA3000FC8C7E /* aizenTests */,
+			);
+			name = aizenTests;
+			packageProductDependencies = (
+				AABB00022F538CD300FC8C7E /* Sparkle */,
+			);
+			productName = aizenTests;
+			productReference = AABB00202F53AA2000FC8C7E /* aizenTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DD35CEAA2F537F9700FC8C7E /* aizen */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DD35CEB62F537F9900FC8C7E /* Build configuration list for PBXNativeTarget "aizen" */;
@@ -179,6 +227,10 @@
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
+					AABB00232F53AA5000FC8C7E = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = DD35CEAA2F537F9700FC8C7E;
+					};
 					DD35CEAA2F537F9700FC8C7E = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -206,11 +258,19 @@
 			targets = (
 				DD35CEAA2F537F9700FC8C7E /* aizen */,
 				DD35CF122F538CD200FC8C7E /* aizenWidgetExtension */,
+				AABB00232F53AA5000FC8C7E /* aizenTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AABB00262F53AA8000FC8C7E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD35CEA92F537F9700FC8C7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -228,6 +288,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AABB00252F53AA7000FC8C7E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD35CEA72F537F9700FC8C7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +312,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AABB00272F53AA9000FC8C7E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD35CEAA2F537F9700FC8C7E /* aizen */;
+			targetProxy = AABB00112F53AA1000FC8C7E /* PBXContainerItemProxy */;
+		};
 		DD35CF242F538CD400FC8C7E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DD35CF122F538CD200FC8C7E /* aizenWidgetExtension */;
@@ -441,6 +513,46 @@
 		};
 		name = Release;
 	};
+		AABB00282F53AAB000FC8C7E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BRH45Z4A8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.benrostudios.aizen.aizenTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aizen.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/aizen";
+			};
+			name = Debug;
+		};
+		AABB00292F53AAC000FC8C7E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BRH45Z4A8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.benrostudios.aizen.aizenTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/aizen.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/aizen";
+			};
+			name = Release;
+		};
 		DD35CF282F538CD400FC8C7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -512,6 +624,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AABB00242F53AA6000FC8C7E /* Build configuration list for PBXNativeTarget "aizenTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB00282F53AAB000FC8C7E /* Debug */,
+				AABB00292F53AAC000FC8C7E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DD35CEA62F537F9700FC8C7E /* Build configuration list for PBXProject "aizen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
