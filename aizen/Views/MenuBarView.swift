@@ -1,8 +1,17 @@
 import AppKit
+import Sparkle
 import SwiftUI
 
 struct MenuBarView: View {
     @Bindable var usageManager: UsageManager
+    @ObservedObject private var checkForUpdatesVM: CheckForUpdatesViewModel
+    private let updater: SPUUpdater
+
+    init(usageManager: UsageManager, updater: SPUUpdater) {
+        self.usageManager = usageManager
+        self.updater = updater
+        self.checkForUpdatesVM = CheckForUpdatesViewModel(updater: updater)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -38,6 +47,13 @@ struct MenuBarView: View {
                 Toggle("Compact", isOn: $usageManager.isCompactMode)
                     .toggleStyle(.switch)
                     .controlSize(.small)
+
+                Spacer(minLength: 8)
+
+                Button("Check for Updates") {
+                    updater.checkForUpdates()
+                }
+                .disabled(!checkForUpdatesVM.canCheckForUpdates)
 
                 Spacer(minLength: 8)
 
