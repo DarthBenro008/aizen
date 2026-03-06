@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AABB00012F538CD300FC8C7E /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AABB00022F538CD300FC8C7E /* Sparkle */; };
 		DD35CF162F538CD300FC8C7E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF152F538CD200FC8C7E /* WidgetKit.framework */; };
 		DD35CF182F538CD300FC8C7E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD35CF172F538CD300FC8C7E /* SwiftUI.framework */; };
 		DD35CF252F538CD400FC8C7E /* aizenWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD35CF132F538CD200FC8C7E /* aizenWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -74,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AABB00012F538CD300FC8C7E /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +141,7 @@
 			);
 			name = aizen;
 			packageProductDependencies = (
+				AABB00022F538CD300FC8C7E /* Sparkle */,
 			);
 			productName = aizen;
 			productReference = DD35CEAB2F537F9700FC8C7E /* aizen.app */;
@@ -193,6 +196,9 @@
 			);
 			mainGroup = DD35CEA22F537F9700FC8C7E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AABB00032F538CD300FC8C7E /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DD35CEAC2F537F9700FC8C7E /* Products */;
 			projectDirPath = "";
@@ -534,6 +540,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AABB00032F538CD300FC8C7E /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AABB00022F538CD300FC8C7E /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AABB00032F538CD300FC8C7E /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DD35CEA32F537F9700FC8C7E /* Project object */;
 }
