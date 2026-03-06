@@ -1,6 +1,6 @@
 # aizen
 
-A native macOS menubar utility that shows real-time remaining usage limits for your AI subscriptions.
+A native macOS menubar utility that shows real-time remaining usage limits for your AI subscriptions -- with an optional desktop widget.
 
 ## Features
 
@@ -11,6 +11,7 @@ A native macOS menubar utility that shows real-time remaining usage limits for y
 - Shows reset countdowns for each limit window
 - Automatic token refresh when Codex credentials expire
 - Extensible provider architecture -- add new AI services by conforming to a single protocol
+- Desktop widget (WidgetKit) -- see your usage at a glance without opening the app
 
 ## Supported Providers
 
@@ -86,6 +87,8 @@ The UI automatically picks up new providers -- no view changes needed.
 ```
 aizen/
   aizenApp.swift              # MenuBarExtra entry point
+  Shared/
+    WidgetUsageData.swift      # Shared data model (main app ↔ widget)
   Models/
     UsageData.swift            # UsageItem, UsageStatus, ProviderUsageState
     ProviderModels.swift       # Codable models for API responses
@@ -103,6 +106,10 @@ aizen/
   Assets.xcassets/
     AppIcon.appiconset/        # App icon (all sizes)
     MenuBarIcon.imageset/      # Monochrome menubar template icon
+aizenWidget/
+  aizenWidget.swift            # WidgetKit timeline provider + views
+  aizenWidgetBundle.swift      # Widget bundle entry point
+  WidgetUsageData.swift        # Symlink → Shared/WidgetUsageData.swift
 ```
 
 ## Tech Stack
@@ -111,6 +118,20 @@ aizen/
 - `@Observable` (Observation framework, no Combine)
 - Swift concurrency: `async/await`, `actor` for thread-safe credential access
 - Zero external dependencies
+- WidgetKit for desktop widget (shared data via App Groups)
+
+## Desktop Widget
+
+aizen includes a macOS desktop widget that displays your AI usage at a glance. Available in two sizes:
+
+- **Small** -- provider names with remaining percentage and a single progress bar each
+- **Medium** -- expanded view with all usage items, individual progress bars, and remaining counts
+
+The widget reads data from the main app via shared `UserDefaults` (App Groups). It refreshes automatically every 15 minutes and immediately whenever the main app fetches new data.
+
+To add the widget: right-click your desktop → Edit Widgets → search for "aizen".
+
+**Note**: The widget does not make API calls directly. You need to open the menubar app at least once so it can write initial data for the widget to display.
 
 ## License
 

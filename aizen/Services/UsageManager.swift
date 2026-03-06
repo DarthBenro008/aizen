@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import WidgetKit
 
 @MainActor
 @Observable
@@ -7,6 +8,9 @@ final class UsageManager {
     var providerStates: [ProviderUsageState]
     var isRefreshing = false
     var lastUpdatedAt: Date?
+    var isCompactMode: Bool {
+        didSet { UserDefaults.standard.set(isCompactMode, forKey: "isCompactMode") }
+    }
 
     private let providers: [any UsageProvider]
 
@@ -35,6 +39,8 @@ final class UsageManager {
                 summaryRemainingPercent: nil
             )
         }
+
+        isCompactMode = UserDefaults.standard.bool(forKey: "isCompactMode")
     }
 
     var menuBarSummaryText: String {
@@ -71,6 +77,7 @@ final class UsageManager {
         }
 
         lastUpdatedAt = Date()
+        updateWidgetData()
     }
 
     private func refreshState(for provider: any UsageProvider) async -> ProviderUsageState {
@@ -116,5 +123,35 @@ final class UsageManager {
         } else {
             providerStates.append(newState)
         }
+    }
+
+    private func updateWidgetData() {
+        let widgetProviders = providerStates.map { state in
+            WidgetProviderData(
+                id: state.id,
+                name: state.name,
+                iconName: state.iconName,
+                planType: state.planType,
+                items: state.usageItems.map { item in
+                    WidgetUsageItem(
+                        id: item.id,
+                        label: item.label,
+                        usedPercent: item.usedPercent,
+                        remaining: item.remaining,
+                        resetsAt: item.resetsAt
+                    )
+                },
+                summaryRemainingPercent: state.summaryRemainingPercent,
+                errorMessage: state.errorMessage,
+                configurationMessage: state.configurationMessage
+            )
+        }
+
+        let widgetData = WidgetUsageData(
+            providers: widgetProviders,
+            lastUpdated: lastUpdatedAt ?? Date()
+        )
+        widgetData.save()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

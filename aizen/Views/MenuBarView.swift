@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
-    let usageManager: UsageManager
+    @Bindable var usageManager: UsageManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -32,6 +32,12 @@ struct MenuBarView: View {
                     }
                 }
                 .keyboardShortcut("r", modifiers: [.command])
+
+                Spacer(minLength: 8)
+
+                Toggle("Compact", isOn: $usageManager.isCompactMode)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
 
                 Spacer(minLength: 8)
 

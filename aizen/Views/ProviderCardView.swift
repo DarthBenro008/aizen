@@ -5,9 +5,8 @@ struct ProviderCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
-                Label(state.name, systemImage: state.iconName)
-                    .font(.headline)
+            HStack(alignment: .center) {
+                ProviderTitleView(state: state)
 
                 Spacer(minLength: 8)
 

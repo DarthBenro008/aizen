@@ -15,10 +15,14 @@ struct aizenApp: App {
         MenuBarExtra {
             MenuBarView(usageManager: usageManager)
         } label: {
-            Label {
+            if usageManager.isCompactMode {
                 Text(usageManager.menuBarSummaryText)
-            } icon: {
-                Image("MenuBarIcon")
+            } else {
+                Label {
+                    Text(usageManager.menuBarSummaryText)
+                } icon: {
+                    Image("MenuBarIcon")
+                }
             }
         }
         .menuBarExtraStyle(.window)
