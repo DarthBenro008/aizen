@@ -1,0 +1,4 @@
+Sparkle SPM dependency added
+APP_SPARKLE=YES
+WIDGET_SPARKLE=NO
+BUILT_PRODUCTS_DIR=/Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug

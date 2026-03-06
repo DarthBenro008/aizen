@@ -1,0 +1,148 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: macos-15
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Import Developer ID Certificate
+        env:
+          APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain
+          KEYCHAIN_PASSWORD=$(uuidgen)
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          echo "$APPLE_CERTIFICATE_P12" | base64 --decode > /tmp/certificate.p12
+          security import /tmp/certificate.p12 -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          rm /tmp/certificate.p12
+
+      - name: Import Sparkle EdDSA Private Key
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          SPARKLE_TOOLS=$(find ~/Library/Developer/Xcode/DerivedData -name generate_keys 2>/dev/null | head -1)
+          if [ -z "$SPARKLE_TOOLS" ]; then
+            echo "Resolving packages to find Sparkle tools..."
+            xcodebuild -resolvePackageDependencies -project aizen.xcodeproj
+            SPARKLE_TOOLS=$(find ~/Library/Developer/Xcode/DerivedData -name generate_keys 2>/dev/null | head -1)
+          fi
+          echo "$SPARKLE_PRIVATE_KEY" > /tmp/sparkle-key.txt
+          "$SPARKLE_TOOLS" -f /tmp/sparkle-key.txt
+          rm /tmp/sparkle-key.txt
+          echo "SPARKLE_TOOLS_DIR=$(dirname $SPARKLE_TOOLS)" >> $GITHUB_ENV
+
+      - name: Extract Version from Tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Building version: $VERSION"
+
+      - name: Build and Archive
+        run: |
+          xcodebuild archive \
+            -scheme aizen \
+            -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
+            -configuration Release \
+            MARKETING_VERSION="$VERSION" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            2>&1 | xcpretty || xcodebuild archive \
+            -scheme aizen \
+            -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
+            -configuration Release \
+            MARKETING_VERSION="$VERSION" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application"
+
+      - name: Export Archive
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Create ZIP Archive
+        run: |
+          ditto -c -k --keepParent \
+            "$RUNNER_TEMP/export/aizen.app" \
+            "$RUNNER_TEMP/aizen-$VERSION.zip"
+
+      - name: Sign Update with EdDSA
+        run: |
+          SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" "$RUNNER_TEMP/aizen-$VERSION.zip")
+          echo "SPARKLE_SIGNATURE=$SIGNATURE" >> $GITHUB_ENV
+
+      - name: Notarize
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          xcrun notarytool submit "$RUNNER_TEMP/aizen-$VERSION.zip" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --wait
+
+      - name: Update Appcast
+        run: |
+          DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/aizen-$VERSION.zip"
+          FILE_SIZE=$(stat -f%z "$RUNNER_TEMP/aizen-$VERSION.zip")
+          PUB_DATE=$(date -u "+%a, %d %b %Y %H:%M:%S +0000")
+          
+          cat > docs/appcast.xml << EOF
+          <?xml version="1.0" encoding="utf-8"?>
+          <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+              <channel>
+                  <title>aizen</title>
+                  <language>en</language>
+                  <item>
+                      <title>Version $VERSION</title>
+                      <sparkle:version>$VERSION</sparkle:version>
+                      <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>
+                      <pubDate>$PUB_DATE</pubDate>
+                      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+                      <enclosure
+                          url="$DOWNLOAD_URL"
+                          $SPARKLE_SIGNATURE
+                          length="$FILE_SIZE"
+                          type="application/octet-stream" />
+                  </item>
+              </channel>
+          </rss>
+          EOF
+
+      - name: Commit Updated Appcast
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/appcast.xml
+          git commit -m "chore: update appcast for ${{ github.ref_name }}" || echo "No changes to commit"
+          git push origin HEAD:main
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ runner.temp }}/aizen-${{ env.VERSION }}.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true

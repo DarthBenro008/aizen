@@ -1,0 +1,15 @@
+Workflow files created
+
+YAML validation: OK
+Plist validation: OK
+XML validation: OK
+
+Files created:
+- .github/workflows/release.yml (GitHub Actions workflow)
+- ExportOptions.plist (Developer ID export options)
+- docs/appcast.xml (Sparkle appcast placeholder)
+
+Validation results:
+- YAML: PASS
+ExportOptions.plist: OK
+- XML: PASS

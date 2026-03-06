@@ -1,0 +1,5 @@
+    cd /Users/benro/gitworks/aizen-ota-updates
+    /Applications/Xcode.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/PlugIns/aizenWidgetExtension.appex -signing-cert A9A036E133ACBC5006CABBE35A74421233B4C8C9 -info-plist-path /Users/benro/Library/Developer/Xcode/DerivedData/aizen-hcqbabaojuibdreobtgokgisesuj/Build/Products/Debug/aizen.app/Contents/Info.plist
+
+** BUILD SUCCEEDED **
+

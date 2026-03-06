@@ -1,0 +1,7 @@
+import Combine
+/// Sparkle uses KVO (not @Observable), so ObservableObject + Combine is required here.
+final class CheckForUpdatesViewModel: ObservableObject {
+/// View model that bridges Sparkle's KVO-based `canCheckForUpdates` property
+    @Published var canCheckForUpdates = false
+        updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
