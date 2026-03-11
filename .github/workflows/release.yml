@@ -55,6 +55,32 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Building version: $VERSION"
 
+      - name: Install Provisioning Profiles
+        env:
+          APPLE_PROVISIONING_PROFILE_APP: ${{ secrets.APPLE_PROVISIONING_PROFILE_APP }}
+          APPLE_PROVISIONING_PROFILE_WIDGET: ${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET }}
+        run: |
+          PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILE_DIR"
+
+          echo "$APPLE_PROVISIONING_PROFILE_APP" | base64 --decode > /tmp/aizen-app.provisionprofile
+          echo "$APPLE_PROVISIONING_PROFILE_WIDGET" | base64 --decode > /tmp/aizen-widget.provisionprofile
+
+          cp /tmp/aizen-app.provisionprofile "$PROFILE_DIR/"
+          cp /tmp/aizen-widget.provisionprofile "$PROFILE_DIR/"
+
+          security cms -D -i /tmp/aizen-app.provisionprofile > /tmp/aizen-app-profile.plist
+          security cms -D -i /tmp/aizen-widget.provisionprofile > /tmp/aizen-widget-profile.plist
+
+          APP_PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' /tmp/aizen-app-profile.plist)
+          WIDGET_PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' /tmp/aizen-widget-profile.plist)
+
+          echo "APP_PROFILE_NAME=$APP_PROFILE_NAME" >> $GITHUB_ENV
+          echo "WIDGET_PROFILE_NAME=$WIDGET_PROFILE_NAME" >> $GITHUB_ENV
+
+          rm /tmp/aizen-app.provisionprofile /tmp/aizen-widget.provisionprofile
+          rm /tmp/aizen-app-profile.plist /tmp/aizen-widget-profile.plist
+
       - name: Build and Archive
         run: |
           xcodebuild archive \
@@ -62,24 +88,48 @@ jobs:
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
             -configuration Release \
             MARKETING_VERSION="$VERSION" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Developer ID Application" \
             2>&1 | xcpretty || xcodebuild archive \
             -scheme aizen \
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
             -configuration Release \
-            MARKETING_VERSION="$VERSION" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Developer ID Application"
+            MARKETING_VERSION="$VERSION"
 
       - name: Export Archive
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>developer-id</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.benrostudios.aizen</key>
+              <string>$APP_PROFILE_NAME</string>
+              <key>com.benrostudios.aizen.aizenWidget</key>
+              <string>$WIDGET_PROFILE_NAME</string>
+            </dict>
+            <key>signingCertificate</key>
+            <string>Developer ID Application</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>teamID</key>
+            <string>$APPLE_TEAM_ID</string>
+            <key>uploadBitcode</key>
+            <false/>
+          </dict>
+          </plist>
+          EOF
+
           xcodebuild -exportArchive \
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
             -exportPath "$RUNNER_TEMP/export" \
-            -exportOptionsPlist ExportOptions.plist
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
 
       - name: Create ZIP Archive
         run: |
