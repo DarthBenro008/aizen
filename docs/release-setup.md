@@ -116,6 +116,7 @@ The GitHub Actions workflow will automatically:
 7. Push the updated appcast to the `main` branch (served via GitHub Pages)
 
 Existing users will receive an update notification within 24 hours (or immediately when they click **Check for Updates**).
+The release workflow publishes the human version as `sparkle:shortVersionString` and a monotonically increasing derived build number as `sparkle:version`, which Sparkle uses for update comparisons.
 
 ---
 

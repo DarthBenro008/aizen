@@ -70,8 +70,18 @@ jobs:
       - name: Extract Version from Tag
         run: |
           VERSION=${GITHUB_REF_NAME#v}
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Expected tag version in MAJOR.MINOR.PATCH format, got: $VERSION" >&2
+            exit 1
+          fi
+          IFS='.' read -r MAJOR MINOR PATCH <<EOF
+          $VERSION
+          EOF
+          BUILD_NUMBER=$((MAJOR * 10000 + MINOR * 100 + PATCH))
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
           echo "Building version: $VERSION"
+          echo "Using build number: $BUILD_NUMBER"
 
       - name: Install Provisioning Profiles
         env:
@@ -117,11 +127,13 @@ jobs:
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
             -configuration Release \
             MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
             2>&1 | xcpretty || xcodebuild archive \
             -scheme aizen \
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
             -configuration Release \
-            MARKETING_VERSION="$VERSION"
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
 
       - name: Export Archive
         env:
@@ -249,7 +261,7 @@ jobs:
                   <language>en</language>
                   <item>
                       <title>Version $VERSION</title>
-                      <sparkle:version>$VERSION</sparkle:version>
+                      <sparkle:version>$BUILD_NUMBER</sparkle:version>
                       <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>
                       <pubDate>$PUB_DATE</pubDate>
                       <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>

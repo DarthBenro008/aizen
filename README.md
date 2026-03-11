@@ -1,6 +1,8 @@
+![banner](docs/assets/banner.png)
+
 # aizen
 
-A native macOS menubar utility that shows real-time remaining usage limits for your AI subscriptions -- with an optional desktop widget.
+A native macOS menubar utility that shows real-time remaining usage limits for your AI subscriptions - with an optional desktop widget.
 
 ## Features
 
@@ -10,15 +12,19 @@ A native macOS menubar utility that shows real-time remaining usage limits for y
 - Color-coded progress bars: green (ok), yellow (warning), red (critical)
 - Shows reset countdowns for each limit window
 - Automatic token refresh when Codex credentials expire
-- Extensible provider architecture -- add new AI services by conforming to a single protocol
-- Desktop widget (WidgetKit) -- see your usage at a glance without opening the app
+- Extensible provider architecture: add new AI services by conforming to a single protocol
+- Desktop widget (WidgetKit): see your usage at a glance without opening the app
+
+## Preview
+
+![preview](docs/assets/app.png)
 
 ## Supported Providers
 
-| Provider | Metrics | Credential Source |
-|---|---|---|
-| GPT Codex | 5-hour limit, Weekly limit | `~/.codex/auth.json` (via `codex login`) |
-| GitHub Copilot | Premium requests remaining | `gh auth token` (via `gh auth login`) |
+| Provider       | Metrics                    | Credential Source                        |
+| -------------- | -------------------------- | ---------------------------------------- |
+| GPT Codex      | 5-hour limit, Weekly limit | `~/.codex/auth.json` (via `codex login`) |
+| GitHub Copilot | Premium requests remaining | `gh auth token` (via `gh auth login`)    |
 
 ## Prerequisites
 
@@ -26,9 +32,11 @@ A native macOS menubar utility that shows real-time remaining usage limits for y
 - Xcode 16+ (to build from source)
 
 For GPT Codex tracking:
+
 - [Codex CLI](https://github.com/openai/codex) installed and authenticated (`codex login`)
 
 For GitHub Copilot tracking:
+
 - [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`)
 
 The app gracefully handles missing providers -- if a CLI tool isn't installed, it shows setup instructions instead of an error.
@@ -122,6 +130,8 @@ aizenWidget/
 
 ## Desktop Widget
 
+![widget](docs/assets/widget.png)
+
 aizen includes a macOS desktop widget that displays your AI usage at a glance. Available in two sizes:
 
 - **Small** -- provider names with remaining percentage and a single progress bar each
@@ -135,7 +145,7 @@ To add the widget: right-click your desktop → Edit Widgets → search for "aiz
 
 ## Auto-Update
 
-aizen automatically checks for updates in the background every 24 hours using [Sparkle](https://sparkle-project.org/). A "Check for Updates" button is available in the menubar popover. When an update is available, Sparkle handles the full download, verification, installation, and relaunch -- no manual steps required.
+aizen automatically checks for updates in the background every 24 hours using [Sparkle](https://sparkle-project.org/). A "Check for Updates" button is available in the menubar popover. Automatic download/install is enabled by default for signed releases, so when an update is available Sparkle handles the full download, verification, installation, and relaunch without manual steps.
 
 **Note**: Auto-updates only work with signed release builds distributed via GitHub Releases. Development builds from Xcode do not receive updates.
 
@@ -151,6 +161,7 @@ git push origin v1.1.0
 ```
 
 GitHub Actions automatically builds, signs, notarizes, creates a GitHub Release with the `.zip` asset, and updates the appcast at `https://darthbenro008.github.io/aizen/appcast.xml`. Running app instances will pick up the update within 24 hours.
+The release workflow also derives a monotonically increasing Sparkle build number from the tag so update checks stay correct across releases.
 
 ## License
 
@@ -159,4 +170,4 @@ MIT
 ## Acknowledgements
 
 - [CodexBar](https://github.com/steipete/CodexBar) for architecture inspiration
-- Uses undocumented OpenAI and GitHub APIs -- use at your own discretion
+- Uses undocumented OpenAI and GitHub APIs - use at your own discretion

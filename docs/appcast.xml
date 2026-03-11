@@ -5,7 +5,7 @@
         <language>en</language>
         <item>
             <title>Version 0.1.6</title>
-            <sparkle:version>0.1.6</sparkle:version>
+            <sparkle:version>106</sparkle:version>
             <sparkle:shortVersionString>0.1.6</sparkle:shortVersionString>
             <pubDate>Wed, 11 Mar 2026 02:24:58 +0000</pubDate>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
