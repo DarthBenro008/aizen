@@ -196,7 +196,18 @@ jobs:
           fi
 
           echo "Using sign_update at $SPARKLE_TOOLS_DIR/sign_update"
+          set +e
           SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" -s "$RUNNER_TEMP/sparkle-key.txt" "$RUNNER_TEMP/aizen-$VERSION.zip" 2>"$RUNNER_TEMP/sign_update.stderr")
+          SIGN_EXIT_CODE=$?
+          set -e
+
+          if [ $SIGN_EXIT_CODE -ne 0 ]; then
+            echo "sign_update failed with exit code $SIGN_EXIT_CODE" >&2
+            if [ -s "$RUNNER_TEMP/sign_update.stderr" ]; then
+              cat "$RUNNER_TEMP/sign_update.stderr" >&2
+            fi
+            exit $SIGN_EXIT_CODE
+          fi
 
           if [ -z "$SIGNATURE" ]; then
             echo "sign_update returned an empty signature" >&2
