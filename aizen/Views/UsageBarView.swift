@@ -11,11 +11,11 @@ struct UsageBarView: View {
     private var fillColor: Color {
         switch status {
         case .ok:
-            return .green
+            return Color(red: 0.37, green: 0.92, blue: 0.54)
         case .warning:
-            return .yellow
+            return Color(red: 0.95, green: 0.77, blue: 0.29)
         case .critical:
-            return .red
+            return Color(red: 0.98, green: 0.44, blue: 0.42)
         }
     }
 
@@ -23,13 +23,13 @@ struct UsageBarView: View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color.gray.opacity(0.2))
+                    .fill(Color.white.opacity(0.09))
 
                 Capsule()
                     .fill(fillColor)
                     .frame(width: proxy.size.width * (remainingPercent / 100))
             }
         }
-        .frame(height: 8)
+        .frame(height: 7)
     }
 }

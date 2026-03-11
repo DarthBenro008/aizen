@@ -4,7 +4,7 @@ struct ProviderCardView: View {
     let state: ProviderUsageState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center) {
                 ProviderTitleView(state: state)
 
@@ -12,8 +12,14 @@ struct ProviderCardView: View {
 
                 if let planType = state.planType, !planType.isEmpty {
                     Text(planType)
-                        .font(.caption)
+                        .font(.caption.weight(.medium))
                         .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule(style: .continuous)
+                                .fill(Color.white.opacity(0.06))
+                        )
                 }
             }
 
@@ -36,12 +42,12 @@ struct ProviderCardView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Text(item.label)
-                                .font(.subheadline)
+                                .font(.subheadline.weight(.medium))
 
                             Spacer(minLength: 8)
 
                             Text("\(Int(item.usedPercent.rounded()))% used")
-                                .font(.caption)
+                                .font(.caption.weight(.medium))
                                 .foregroundStyle(.secondary)
                         }
 
@@ -66,10 +72,23 @@ struct ProviderCardView: View {
                 }
             }
         }
-        .padding(12)
+        .padding(14)
         .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color(nsColor: .controlBackgroundColor))
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.06),
+                            Color.white.opacity(0.03)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
         )
     }
 }

@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct ProviderTitleView: View {
@@ -12,7 +13,7 @@ struct ProviderTitleView: View {
             )
 
             Text(state.name)
-                .font(.headline)
+                .font(.headline.weight(.semibold))
         }
     }
 }
@@ -29,14 +30,35 @@ private struct ProviderIconView: View {
     @ViewBuilder
     var body: some View {
         if normalizedName.contains("codex") {
-            CodexBrandMark()
-                .frame(width: 18, height: 18)
+            BrandAssetIcon(assetName: "ProviderCodex") {
+                CodexBrandMark()
+            }
         } else if normalizedName.contains("github") || normalizedName.contains("copilot") {
-            GitHubBrandMark()
-                .frame(width: 18, height: 18)
+            BrandAssetIcon(assetName: "ProviderCopilot") {
+                GitHubBrandMark()
+            }
         } else {
             Image(systemName: fallbackSystemImage)
                 .font(.system(size: 16, weight: .semibold))
+                .frame(width: 18, height: 18)
+        }
+    }
+}
+
+private struct BrandAssetIcon<Fallback: View>: View {
+    let assetName: String
+    @ViewBuilder let fallback: () -> Fallback
+
+    var body: some View {
+        if let image = NSImage(named: assetName) {
+            Image(nsImage: image)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+                .foregroundStyle(.primary)
+        } else {
+            fallback()
                 .frame(width: 18, height: 18)
         }
     }
