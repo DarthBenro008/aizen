@@ -60,6 +60,16 @@ jobs:
           APPLE_PROVISIONING_PROFILE_APP: ${{ secrets.APPLE_PROVISIONING_PROFILE_APP }}
           APPLE_PROVISIONING_PROFILE_WIDGET: ${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET }}
         run: |
+          if [ -z "$APPLE_PROVISIONING_PROFILE_APP" ]; then
+            echo "Missing secret: APPLE_PROVISIONING_PROFILE_APP" >&2
+            exit 1
+          fi
+
+          if [ -z "$APPLE_PROVISIONING_PROFILE_WIDGET" ]; then
+            echo "Missing secret: APPLE_PROVISIONING_PROFILE_WIDGET" >&2
+            exit 1
+          fi
+
           PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
           mkdir -p "$PROFILE_DIR"
 
@@ -83,6 +93,7 @@ jobs:
 
       - name: Build and Archive
         run: |
+          set -o pipefail
           xcodebuild archive \
             -scheme aizen \
             -archivePath "$RUNNER_TEMP/aizen.xcarchive" \
@@ -98,6 +109,11 @@ jobs:
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          if [ ! -d "$RUNNER_TEMP/aizen.xcarchive" ]; then
+            echo "Archive missing at $RUNNER_TEMP/aizen.xcarchive. Check the Build and Archive step for the actual xcodebuild failure." >&2
+            exit 1
+          fi
+
           cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
