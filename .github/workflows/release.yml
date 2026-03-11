@@ -48,19 +48,23 @@ jobs:
           security find-identity -v -p codesigning "$KEYCHAIN_PATH"
           rm /tmp/certificate.p12
 
-      - name: Import Sparkle EdDSA Private Key
+      - name: Prepare Sparkle Tools
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
         run: |
+          if [ -z "$SPARKLE_PRIVATE_KEY" ]; then
+            echo "Missing secret: SPARKLE_PRIVATE_KEY" >&2
+            exit 1
+          fi
+
           SPARKLE_TOOLS=$(find ~/Library/Developer/Xcode/DerivedData -name generate_keys 2>/dev/null | head -1)
           if [ -z "$SPARKLE_TOOLS" ]; then
             echo "Resolving packages to find Sparkle tools..."
             xcodebuild -resolvePackageDependencies -project aizen.xcodeproj
             SPARKLE_TOOLS=$(find ~/Library/Developer/Xcode/DerivedData -name generate_keys 2>/dev/null | head -1)
           fi
-          echo "$SPARKLE_PRIVATE_KEY" > /tmp/sparkle-key.txt
-          "$SPARKLE_TOOLS" -f /tmp/sparkle-key.txt
-          rm /tmp/sparkle-key.txt
+
+          printf "%s" "$SPARKLE_PRIVATE_KEY" > "$RUNNER_TEMP/sparkle-key.txt"
           echo "SPARKLE_TOOLS_DIR=$(dirname $SPARKLE_TOOLS)" >> $GITHUB_ENV
 
       - name: Extract Version from Tag
@@ -169,7 +173,43 @@ jobs:
 
       - name: Sign Update with EdDSA
         run: |
-          SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" "$RUNNER_TEMP/aizen-$VERSION.zip")
+          set -euo pipefail
+
+          if [ -z "${SPARKLE_TOOLS_DIR:-}" ]; then
+            echo "Missing environment variable: SPARKLE_TOOLS_DIR" >&2
+            exit 1
+          fi
+
+          if [ ! -x "$SPARKLE_TOOLS_DIR/sign_update" ]; then
+            echo "sign_update not found or not executable at $SPARKLE_TOOLS_DIR/sign_update" >&2
+            exit 1
+          fi
+
+          if [ ! -s "$RUNNER_TEMP/sparkle-key.txt" ]; then
+            echo "Sparkle private key file missing or empty at $RUNNER_TEMP/sparkle-key.txt" >&2
+            exit 1
+          fi
+
+          if [ ! -f "$RUNNER_TEMP/aizen-$VERSION.zip" ]; then
+            echo "Archive to sign not found at $RUNNER_TEMP/aizen-$VERSION.zip" >&2
+            exit 1
+          fi
+
+          echo "Using sign_update at $SPARKLE_TOOLS_DIR/sign_update"
+          SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" -s "$RUNNER_TEMP/sparkle-key.txt" "$RUNNER_TEMP/aizen-$VERSION.zip" 2>"$RUNNER_TEMP/sign_update.stderr")
+
+          if [ -z "$SIGNATURE" ]; then
+            echo "sign_update returned an empty signature" >&2
+            if [ -s "$RUNNER_TEMP/sign_update.stderr" ]; then
+              cat "$RUNNER_TEMP/sign_update.stderr" >&2
+            fi
+            exit 1
+          fi
+
+          if [ -s "$RUNNER_TEMP/sign_update.stderr" ]; then
+            cat "$RUNNER_TEMP/sign_update.stderr"
+          fi
+
           echo "SPARKLE_SIGNATURE=$SIGNATURE" >> $GITHUB_ENV
 
       - name: Notarize
