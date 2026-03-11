@@ -3,6 +3,17 @@
     <channel>
         <title>aizen</title>
         <language>en</language>
-        <!-- Releases will be added here automatically by the GitHub Actions release workflow -->
+        <item>
+            <title>Version 0.1.6</title>
+            <sparkle:version>0.1.6</sparkle:version>
+            <sparkle:shortVersionString>0.1.6</sparkle:shortVersionString>
+            <pubDate>Wed, 11 Mar 2026 02:24:58 +0000</pubDate>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <enclosure
+                url="https://github.com/DarthBenro008/aizen/releases/download/v0.1.6/aizen-0.1.6.zip"
+                bLVlv5r3yVf9ts4anOCUv7UVHpZEHIIJRWHz+dzFTZc8EHj7+kMvdRr5/alF0S9XKJwLiSFz5h/DCxYZBHqVCw==
+                length="1301551"
+                type="application/octet-stream" />
+        </item>
     </channel>
 </rss>
