@@ -4,15 +4,15 @@
         <title>aizen</title>
         <language>en</language>
         <item>
-            <title>Version 0.1.6</title>
-            <sparkle:version>106</sparkle:version>
-            <sparkle:shortVersionString>0.1.6</sparkle:shortVersionString>
-            <pubDate>Wed, 11 Mar 2026 02:24:58 +0000</pubDate>
+            <title>Version 0.1.8</title>
+            <sparkle:version>108</sparkle:version>
+            <sparkle:shortVersionString>0.1.8</sparkle:shortVersionString>
+            <pubDate>Wed, 11 Mar 2026 02:51:03 +0000</pubDate>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <enclosure
-                url="https://github.com/DarthBenro008/aizen/releases/download/v0.1.6/aizen-0.1.6.zip"
-                sparkle:edSignature="bLVlv5r3yVf9ts4anOCUv7UVHpZEHIIJRWHz+dzFTZc8EHj7+kMvdRr5/alF0S9XKJwLiSFz5h/DCxYZBHqVCw=="
-                length="1301551"
+                url="https://github.com/DarthBenro008/aizen/releases/download/v0.1.8/aizen-0.1.8.zip"
+                sparkle:edSignature="j4EpoXdiZzLdqu/X+jA0pOQEszbaMEwLdE+Ihb6BBsNftsR6bvGMFAJVkWqcuwcteAQwaQfvOFm3P0hhts0DAQ=="
+                length="1302033"
                 type="application/octet-stream" />
         </item>
     </channel>
