@@ -255,7 +255,7 @@ jobs:
                       <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
                       <enclosure
                           url="$DOWNLOAD_URL"
-                          $SPARKLE_SIGNATURE
+                          sparkle:edSignature="$SPARKLE_SIGNATURE"
                           length="$FILE_SIZE"
                           type="application/octet-stream" />
                   </item>
