@@ -197,7 +197,7 @@ jobs:
 
           echo "Using sign_update at $SPARKLE_TOOLS_DIR/sign_update"
           set +e
-          SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" -s "$RUNNER_TEMP/sparkle-key.txt" "$RUNNER_TEMP/aizen-$VERSION.zip" 2>"$RUNNER_TEMP/sign_update.stderr")
+          SIGNATURE=$("$SPARKLE_TOOLS_DIR/sign_update" --ed-key-file "$RUNNER_TEMP/sparkle-key.txt" -p "$RUNNER_TEMP/aizen-$VERSION.zip" 2>"$RUNNER_TEMP/sign_update.stderr")
           SIGN_EXIT_CODE=$?
           set -e
 
