@@ -33,6 +33,10 @@ private struct ProviderIconView: View {
             BrandAssetIcon(assetName: "ProviderCodex") {
                 CodexBrandMark()
             }
+        } else if normalizedName.contains("claude") {
+            BrandAssetIcon(assetName: "ProviderClaude") {
+                ClaudeBrandMark()
+            }
         } else if normalizedName.contains("github") || normalizedName.contains("copilot") {
             BrandAssetIcon(assetName: "ProviderCopilot") {
                 GitHubBrandMark()
@@ -77,6 +81,40 @@ private struct CodexBrandMark: View {
             Circle()
                 .fill(Color(nsColor: .windowBackgroundColor))
                 .frame(width: 4, height: 4)
+        }
+        .foregroundStyle(.primary)
+    }
+}
+
+private struct ClaudeBrandMark: View {
+    var body: some View {
+        // Anthropic sparkle: 4-pointed star
+        Canvas { context, size in
+            let cx = size.width / 2
+            let cy = size.height / 2
+            let outer: CGFloat = min(size.width, size.height) / 2
+            let inner: CGFloat = outer * 0.25
+
+            var path = Path()
+            for i in 0..<4 {
+                let outerAngle = Angle.degrees(Double(i) * 90 - 90)
+                let innerAngle = Angle.degrees(Double(i) * 90 - 45)
+
+                let ox = cx + outer * CGFloat(cos(outerAngle.radians))
+                let oy = cy + outer * CGFloat(sin(outerAngle.radians))
+                let ix = cx + inner * CGFloat(cos(innerAngle.radians))
+                let iy = cy + inner * CGFloat(sin(innerAngle.radians))
+
+                if i == 0 {
+                    path.move(to: CGPoint(x: ox, y: oy))
+                } else {
+                    path.addLine(to: CGPoint(x: ox, y: oy))
+                }
+                path.addLine(to: CGPoint(x: ix, y: iy))
+            }
+            path.closeSubpath()
+
+            context.fill(path, with: .foreground)
         }
         .foregroundStyle(.primary)
     }

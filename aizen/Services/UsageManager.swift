@@ -23,7 +23,8 @@ final class UsageManager {
         } else {
             self.providers = [
                 CodexProvider(credentialManager: credentialManager),
-                CopilotProvider(credentialManager: credentialManager)
+                CopilotProvider(credentialManager: credentialManager),
+                ClaudeCodeProvider(credentialManager: credentialManager)
             ]
         }
 
@@ -44,12 +45,11 @@ final class UsageManager {
     }
 
     var menuBarSummaryText: String {
-        let codex = providerStates.first(where: { $0.id == "codex" })?.summaryRemainingPercent
-        let copilot = providerStates.first(where: { $0.id == "copilot" })?.summaryRemainingPercent
-
-        let codexText = codex.map(String.init) ?? "--"
-        let copilotText = copilot.map(String.init) ?? "--"
-        return "C:\(codexText)% G:\(copilotText)%"
+        providers.compactMap { provider in
+            let pct = providerStates.first(where: { $0.id == provider.id })?.summaryRemainingPercent
+            let text = pct.map(String.init) ?? "--"
+            return "\(provider.summaryPrefix):\(text)%"
+        }.joined(separator: " ")
     }
 
     var lastUpdatedText: String {

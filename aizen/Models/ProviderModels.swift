@@ -97,3 +97,65 @@ struct CopilotQuotaSnapshot: Decodable, Sendable {
         case unlimited
     }
 }
+
+// MARK: - Claude Code
+
+struct ClaudeAuthStatus: Decodable, Sendable {
+    let loggedIn: Bool
+    let authMethod: String?
+    let apiProvider: String?
+    let email: String?
+    let orgId: String?
+    let orgName: String?
+    let subscriptionType: String?
+}
+
+struct ClaudeUsageResponse: Decodable, Sendable {
+    let fiveHour: ClaudeUsageWindow?
+    let sevenDay: ClaudeUsageWindow?
+    let sevenDayOpus: ClaudeUsageWindow?
+    let sevenDaySonnet: ClaudeUsageWindow?
+    let extraUsage: ClaudeExtraUsage?
+
+    enum CodingKeys: String, CodingKey {
+        case fiveHour = "five_hour"
+        case sevenDay = "seven_day"
+        case sevenDayOpus = "seven_day_opus"
+        case sevenDaySonnet = "seven_day_sonnet"
+        case extraUsage = "extra_usage"
+    }
+
+    /// Flexible initializer: decodes known fields, ignores unknown structure
+    init(from decoder: Decoder) throws {
+        let container = try? decoder.container(keyedBy: CodingKeys.self)
+        fiveHour = try? container?.decode(ClaudeUsageWindow.self, forKey: .fiveHour)
+        sevenDay = try? container?.decode(ClaudeUsageWindow.self, forKey: .sevenDay)
+        sevenDayOpus = try? container?.decode(ClaudeUsageWindow.self, forKey: .sevenDayOpus)
+        sevenDaySonnet = try? container?.decode(ClaudeUsageWindow.self, forKey: .sevenDaySonnet)
+        extraUsage = try? container?.decode(ClaudeExtraUsage.self, forKey: .extraUsage)
+    }
+}
+
+struct ClaudeUsageWindow: Decodable, Sendable {
+    let utilization: Double
+    let resetsAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case utilization
+        case resetsAt = "resets_at"
+    }
+}
+
+struct ClaudeExtraUsage: Decodable, Sendable {
+    let isEnabled: Bool?
+    let monthlyLimit: Double?
+    let usedCredits: Double?
+    let utilization: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case isEnabled = "is_enabled"
+        case monthlyLimit = "monthly_limit"
+        case usedCredits = "used_credits"
+        case utilization
+    }
+}

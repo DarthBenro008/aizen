@@ -117,6 +117,86 @@ actor CredentialManager {
         try data.write(to: codexAuthURL, options: .atomic)
     }
 
+    // MARK: - Claude Code
+
+    static let claudePaths: [String] = {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        return [
+            "\(home)/.local/bin/claude",
+            "\(home)/.claude/local/claude",
+            "/usr/local/bin/claude",
+            "/opt/homebrew/bin/claude"
+        ]
+    }()
+
+    func hasClaudeCodeCLI() -> Bool {
+        Self.claudePaths.contains(where: { fileManager.isExecutableFile(atPath: $0) })
+    }
+
+    func claudeAuthStatus() throws -> ClaudeAuthStatus {
+        for claudePath in Self.claudePaths where fileManager.isExecutableFile(atPath: claudePath) {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: claudePath)
+            process.arguments = ["auth", "status"]
+
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            process.standardOutput = outputPipe
+            process.standardError = errorPipe
+
+            do {
+                try process.run()
+                process.waitUntilExit()
+            } catch {
+                continue
+            }
+
+            if process.terminationStatus == 0 {
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let status = try JSONDecoder().decode(ClaudeAuthStatus.self, from: outputData)
+                return status
+            }
+        }
+
+        throw ProviderError.notConfigured("Run `claude auth login` to sign in to your Anthropic account")
+    }
+
+    func claudeOAuthToken() throws -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/security")
+        process.arguments = ["find-generic-password", "-s", "Claude Code-credentials", "-w"]
+
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = errorPipe
+
+        try process.run()
+        process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            throw ProviderError.notConfigured("Claude Code OAuth token not found in Keychain")
+        }
+
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let raw = String(decoding: outputData, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // The keychain entry stores nested JSON: { "claudeAiOauth": { "accessToken": "..." } }
+        if let jsonData = raw.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+           let oauthObj = json["claudeAiOauth"] as? [String: Any],
+           let token = oauthObj["accessToken"] as? String ?? oauthObj["access_token"] as? String {
+            return token
+        }
+
+        // Otherwise treat the raw value as the token itself
+        guard !raw.isEmpty else {
+            throw ProviderError.notConfigured("Claude Code OAuth token is empty")
+        }
+
+        return raw
+    }
+
     private static let ghPaths = ["/opt/homebrew/bin/gh", "/usr/local/bin/gh"]
 
     private static func timestampString(for date: Date) -> String {
