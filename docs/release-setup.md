@@ -77,8 +77,18 @@ Go to your GitHub repo → **Settings** → **Secrets and variables** → **Acti
 | `APPLE_ID` | Your Apple ID email address |
 | `APPLE_TEAM_ID` | Your Apple Developer Team ID (e.g., `7BRH45Z4A8`) |
 | `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password from Step 5 |
+| `HOMEBREW_TAP_TOKEN` | Fine-grained PAT with `contents: write` on `DarthBenro008/homebrew-tap` |
 
-### Step 7: Enable GitHub Pages
+### Step 7: Create a Fine-Grained PAT for the Homebrew Tap
+
+The release workflow pushes cask formula updates to the `DarthBenro008/homebrew-tap` repo. It needs a PAT with write access:
+
+1. Go to **GitHub Settings** → **Developer settings** → **Fine-grained personal access tokens** → **Generate new token**
+2. Scope the token to **only** the `DarthBenro008/homebrew-tap` repository
+3. Under **Repository permissions**, set **Contents** to **Read and write**
+4. Copy the token and add it as the `HOMEBREW_TAP_TOKEN` secret (Step 6)
+
+### Step 8: Enable GitHub Pages
 
 1. Go to your GitHub repo → **Settings** → **Pages**
 2. **Source**: Deploy from a branch
@@ -114,6 +124,7 @@ The GitHub Actions workflow will automatically:
 5. Create a GitHub Release with the ZIP as an asset
 6. Update `docs/appcast.xml` with the new release
 7. Push the updated appcast to the `main` branch (served via GitHub Pages)
+8. Update the Homebrew cask formula in `DarthBenro008/homebrew-tap` with the new version and SHA256
 
 Existing users will receive an update notification within 24 hours (or immediately when they click **Check for Updates**).
 The release workflow publishes the human version as `sparkle:shortVersionString` and a monotonically increasing derived build number as `sparkle:version`, which Sparkle uses for update comparisons.

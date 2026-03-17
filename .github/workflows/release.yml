@@ -289,3 +289,49 @@ jobs:
           files: ${{ runner.temp }}/aizen-${{ env.VERSION }}.zip
           generate_release_notes: true
           fail_on_unmatched_files: true
+
+      - name: Update Homebrew Tap
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          SHA256=$(shasum -a 256 "$RUNNER_TEMP/aizen-$VERSION.zip" | awk '{print $1}')
+          echo "ZIP SHA256: $SHA256"
+
+          cat > "$RUNNER_TEMP/aizen.rb" <<'CASKEOF'
+          cask "aizen" do
+            version "VERSION_PLACEHOLDER"
+            sha256 "SHA256_PLACEHOLDER"
+
+            url "https://github.com/DarthBenro008/aizen/releases/download/v#{version}/aizen-#{version}.zip"
+            name "aizen"
+            desc "macOS menubar utility showing real-time AI subscription usage limits"
+            homepage "https://github.com/DarthBenro008/aizen"
+
+            auto_updates true
+            depends_on macos: ">= :sequoia"
+
+            app "aizen.app"
+
+            zap trash: [
+              "~/Library/Preferences/com.benrostudios.aizen.plist",
+              "~/Library/Group Containers/group.com.benrostudios.aizen",
+              "~/Library/Caches/com.benrostudios.aizen",
+              "~/Library/HTTPStorages/com.benrostudios.aizen",
+              "~/Library/WebKit/com.benrostudios.aizen",
+            ]
+          end
+          CASKEOF
+
+          sed -i '' "s/VERSION_PLACEHOLDER/$VERSION/g" "$RUNNER_TEMP/aizen.rb"
+          sed -i '' "s/SHA256_PLACEHOLDER/$SHA256/g" "$RUNNER_TEMP/aizen.rb"
+
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/DarthBenro008/homebrew-tap.git" "$RUNNER_TEMP/homebrew-tap"
+          cp "$RUNNER_TEMP/aizen.rb" "$RUNNER_TEMP/homebrew-tap/Casks/aizen.rb"
+          cd "$RUNNER_TEMP/homebrew-tap"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/aizen.rb
+          git commit -m "chore: bump aizen to $VERSION"
+          git push

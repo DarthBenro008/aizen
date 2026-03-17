@@ -43,8 +43,16 @@ The app gracefully handles missing providers -- if a CLI tool isn't installed, i
 
 ## Installation
 
+### Homebrew
+
 ```bash
-git clone https://github.com/benro/aizen.git
+brew install --cask DarthBenro008/tap/aizen
+```
+
+### Build from source
+
+```bash
+git clone https://github.com/DarthBenro008/aizen.git
 cd aizen
 open aizen.xcodeproj
 ```
